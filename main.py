@@ -1,8 +1,9 @@
 import crawl as crawler
-#import crawl_from_files as crawler_files
+import crawl_from_files as crawler_files
 import os
 from os import path
 import preprocessor as pre
+import measure as mea
 
 
 print('* '*10+'MENU'+'* '*10)
@@ -18,7 +19,7 @@ dir = ''
 if(choose == 1):
     crawler_files.run('topic')
 elif(choose == 2):
-
+    result_list = []
     url = input('input your url: ')
     if('http://' not in url and 'https://' not in url ):
         dir =  url
@@ -29,11 +30,21 @@ elif(choose == 2):
         os.mkdir(dir)
     _path = dir+'/data.txt'
     f = open(_path,'w',encoding='utf-8')
+    # create dir TF_IDF
+    if(not path.exists('TF_IDF')):
+        os.mkdir('TF_IDF')
+    # create dir bag of word
+    if(not path.exists('BOW')):
+        os.mkdir('BOW')
+    tf_file = open('TF_IDF/data.txt','w+')
+    bow_file = open('BOW/data.txt','w+')
 
     f.write(crawler.crawl(url))
-    pre.preprocessor(_path)
+
+    result_list.append(pre.preprocessor(_path))
     print('done!')
     continous = int(input("do you want to get some topic from your website? "))
+    
     if(continous):
         ls_url = crawler.getUrl(url)
         [print(str(i+1)+":"+ls_url[i]) for i in range(len(ls_url))]
@@ -51,7 +62,14 @@ elif(choose == 2):
             _path = dir+'/'+url_option+'/data.txt'
             f = open(_path,'w',encoding='utf-8')
             f.write(crawler.crawl(ls_url[option-1]))
-            pre.preprocessor(_path)
+            result_list.append(pre.preprocessor(_path))
             check=int(input('do you want to contious!'))
+
+    tf_idf = mea.TF_IDF(result_list)
+    [tf_file.write(i) for i in tf_idf] # run solve tf_idf
+    bow = mea.BoW(result_list)
+    bow_file.write(str(bow)) # run solve bow
+    mea.cosin(bow) # run solve cosin
+
 else:
   print('somthing went wrong !!!')

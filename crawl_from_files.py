@@ -4,13 +4,13 @@ from os import path
 import preprocessor as pre
 #import TF_IDF as tf_idf
 list_path=[]
-def getFile(path):
+def getFile(p):
 
-    for element in os.listdir(path):
+    for element in os.listdir(p):
         if('.' not in element):
-            getFile(path+'/'+element)#
+            getFile(p+'/'+element)#
         else:
-            list_path.append(path+"/"+element)
+            list_path.append(p+"/"+element)
     return list_path
 
 # getFile('topic')
@@ -21,8 +21,10 @@ def create_dir_tree(dir,topic):
     if(not path.exists(dir+'/'+topic)):
         os.mkdir(dir+'/'+topic)
     
-def fetch(path):
-    list_url_file = getFile(path) # get file which is have url
+
+
+def fetch(p):
+    list_url_file = getFile(p) # get file which is have url
     list_path = []
     for urls_file in list_url_file:
         f = open(urls_file,'r',encoding='utf-8') # open file to get url and add to list urls
@@ -47,34 +49,15 @@ def preprocessor(): # reprocessor data from fetch
         pre.preprocessor(file)
     
 
-def TF_IDF():
-    if(not path.exists('TF-IDF')):# create dir
-        os.mkdir('TF-IDF')
-
-
-
-    path_ = 'TF-IDF/TF_IDF.txt'
-    list_file = getFile('result')
-    f = open(path_,'w',encoding='utf-8')
-  
-    for i in range(len(list_file)):
-        fr = open(list_file[i],'r',encoding='utf-8')
-        result = tf_idf.TF_IDF([fr.read()])#loop to solve file in list file
-        f.write(list_file[i].split('/')[2]+'\n') #show file name
-        for element in result:
-            f.write(str(element)+'\n')
-
-def main(path):
-    fetch(path)
+def run(p):
+    fetch(p)
     preprocessor()
-    #TF_IDF()
+
+
+
+
+
     
-
-
-
-
-    
-
 
 
 

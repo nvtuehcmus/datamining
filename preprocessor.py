@@ -72,4 +72,5 @@ def preprocessor(path):
     f=open(path,'w',encoding='utf-8')
     f.write(newText)
     f.close()
+    return newText
     
